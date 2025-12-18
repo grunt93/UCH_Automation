@@ -3,22 +3,26 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait 
 from selenium.webdriver.support import expected_conditions as EC 
 import time
-from collections import defaultdict # 用於方便地初始化計數器
+from collections import defaultdict 
 
-# ===============================================
-#                【設定變數區】
-# ===============================================
-
-# 替換成您的目標登入頁面網址
 LOGIN_URL = "https://std.uch.edu.tw/Std_Xerox/Login_Index.aspx" 
-YOUR_ACCOUNT = "D11213201" # 替換成您的學號/帳號
-MY_PASSWORD = "Gg0976682163" # 替換成您的密碼
+YOUR_ACCOUNT = "D11213201"
+MY_PASSWORD = "Gg0976682163"
 
 # 登入成功後要跳轉的目標網址 (缺曠記錄頁面)
 TARGET_URL = "https://std.uch.edu.tw/Std_Xerox/Miss_ct.aspx" 
 
-# 缺曠記錄表格的 ID (來自您提供的 HTML 內容)
+# 缺曠記錄表格的 ID
 TABLE_ID = "ctl00_ContentPlaceHolder1_gw_absent"
+
+COURSE_FACTORS = {
+    "程式設計與應用(三)": 4,
+    "資料庫系統與實習": 2,
+    "網頁資料庫程式開發實作": 4,
+    "廣域網路與實習": 4,
+    "性別與文化": 2,
+    "RHCE紅帽Linux系統自動化": 4,
+}
 
 try:
     # 1. 初始化瀏覽器並訪問登入頁面
@@ -48,80 +52,89 @@ try:
     
     # 4. 擷取表格資訊
     
-    # 等待表格元素出現 (最多 10 秒)，確保頁面已載入
+    # 等待表格元素出現 (最多 10 秒)
     print(f"等待表格 ({TABLE_ID}) 載入...")
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, TABLE_ID))
     )
     
-    # 找到表格元素
     table = driver.find_element(By.ID, TABLE_ID)
-    
-    # 抓取所有行 (Row)
     rows = table.find_elements(By.TAG_NAME, "tr")
     
-    raw_data = []
+    raw_data = [] 
     
-    # 抓取資料行 (從第二行開始，忽略表頭)
     if len(rows) > 1:
         for row in rows[1:]:
             cols = row.find_elements(By.TAG_NAME, "td")
             if cols:
-                # 抓取：[課程名稱(索引2), 狀態(索引3)]
+                # 抓取：[日期(索引1), 課程名稱(索引2), 狀態(索引3)]
+                # 僅需課程名稱和狀態來計算節次
                 course_name = cols[2].text
                 absence_status = cols[3].text
                 raw_data.append((course_name, absence_status))
 
     # 5. 統計數據
     
-    # 使用 defaultdict(lambda: defaultdict(int)) 來計數
-    # 結構: {課程名稱: {狀態: 數量, 總計: 數量}}
-    summary_data = defaultdict(lambda: defaultdict(int))
-    absence_types = ['事假', '病假', '遲到', '曠課'] # 依據範例文件定義的順序
+    # 結構: {課程名稱: {狀態: 數量, 總缺課數量: 數量, 總天數: 計算值}}
+    summary_data = defaultdict(lambda: defaultdict(float)) # 將 defaultdict 的預設類型改為 float
+    absence_types = ['事假', '病假', '遲到', '曠課'] 
     
-    for course_name, status in raw_data:
+    # 遍歷原始資料 (課程名稱, 狀態)
+    for course_name, status in raw_data: 
         if status in absence_types:
+            # 1. 計算總節次數 (總缺課數量)
             summary_data[course_name][status] += 1
             summary_data[course_name]['總缺課數量'] += 1
+            
+    # 2. 計算總天數
+    for course_name in summary_data:
+        total_absent = summary_data[course_name]['總缺課數量']
+        factor = COURSE_FACTORS.get(course_name) # 取得課別每日節數
+        
+        if factor and total_absent > 0:
+            # 總缺課數量 / 應計節次 (結果為浮點數)
+            calculated_days = total_absent / factor
+            summary_data[course_name]['總天數'] = calculated_days
+        else:
+             # 如果沒有定義因子或缺課數為零，則總天數為 0.0
+             summary_data[course_name]['總天數'] = 0.0
     
     # 6. 列印計算後的總結表格
     
-    print("\n" + "="*80)
-    print("                 【缺曠記錄總結與計算結果】")
-    print("="*80)
+    print("\n" + "="*85)
+    print("                   【缺曠記錄總結與計算結果】")
+    print("="*85)
     
     if summary_data:
-        # 準備要顯示的欄位
-        columns = ['課程名稱'] + absence_types + ['總缺課數量']
+        # 準備要顯示的欄位 
+        columns = ['課程名稱'] + absence_types + ['總缺課數量', '總天數']
         output_rows = [columns]
         
         for course_name, counts in summary_data.items():
             row = [course_name]
             for status in absence_types:
-                row.append(counts.get(status, 0)) # 取得假別數量，若無則為 0
-            row.append(counts.get('總缺課數量', 0)) # 取得總缺課數量
+                row.append(int(counts.get(status, 0))) # 節次數量為整數
+            row.append(int(counts.get('總缺課數量', 0))) # 總節次數量為整數
+            # 總天數為浮點數，格式化為小數點後兩位
+            row.append(f"{counts.get('總天數', 0.0):.2f}") 
             output_rows.append(row)
             
         # 格式化輸出
-        # 將所有數值轉換為字串以便計算長度
         str_output_rows = [[str(item) for item in row] for row in output_rows]
 
         # 計算每個欄位的最大寬度
         col_widths = [max(len(item) for item in col) for col in zip(*str_output_rows)]
-        # 確保「課程名稱」欄位有足夠的最小寬度
         col_widths[0] = max(col_widths[0], 12) 
 
         for i, row in enumerate(str_output_rows):
-            # 格式化並列印行
             formatted_row = " | ".join(f"{item:<{col_widths[j]}}" for j, item in enumerate(row))
             print(formatted_row)
             if i == 0:
-                # 在標題下方列印分隔線
                 print("-" * (sum(col_widths) + 3 * (len(col_widths) - 1)))
     else:
         print("未找到缺曠記錄或表格中沒有資料。")
         
-    print("="*80)
+    print("="*85)
     
     # 7. 結束
     time.sleep(5) 
