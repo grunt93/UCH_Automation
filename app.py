@@ -5,9 +5,8 @@ import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
 from collections import defaultdict
 from typing import Set, Dict, Any, List, Tuple
-import json # 【新增】引入 JSON 模組來儲存配置
+import json
 
-# 引入 Selenium 相關模組
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait 
@@ -26,14 +25,7 @@ TABLE_ID = "ctl00_ContentPlaceHolder1_gw_absent"
 ABSENCE_TYPES = ['事假', '病假', '遲到', '曠課']
 
 # 預設的課程應計節次因子 (只有第一次運行找不到配置檔時才會使用)
-DEFAULT_COURSE_FACTORS: Dict[str, int] = {
-    "程式設計與應用(三)": 4,
-    "資料庫系統與實習": 2,
-    "網頁資料庫程式開發實作": 4,
-    "廣域網路與實習": 4,
-    "性別與文化": 2,
-    "RHCE紅帽Linux系統自動化": 4,
-}
+DEFAULT_COURSE_FACTORS: Dict[str, int] = {}
 
 # --- 資料持久化函數 ---
 
@@ -240,13 +232,11 @@ class MissingAttendanceApp:
         # 帳號
         ttk.Label(input_frame, text="學號/帳號:").grid(row=0, column=0, padx=5, pady=5, sticky='w')
         self.account_entry = ttk.Entry(input_frame, width=30)
-        self.account_entry.insert(0, "D11213201")
         self.account_entry.grid(row=0, column=1, padx=5, pady=5)
 
         # 密碼
         ttk.Label(input_frame, text="密碼:").grid(row=1, column=0, padx=5, pady=5, sticky='w')
         self.password_entry = ttk.Entry(input_frame, width=30, show='*')
-        self.password_entry.insert(0, "Gg0976682163")
         self.password_entry.grid(row=1, column=1, padx=5, pady=5)
         
         # --- 按鈕框架 (包含查詢和編輯) ---
