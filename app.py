@@ -5,8 +5,9 @@ import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
 from collections import defaultdict
 from typing import Set, Dict, Any, List, Tuple
-import json
+import json 
 
+# 引入 Selenium 相關模組
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait 
@@ -139,7 +140,7 @@ class EditFactorsWindow(tk.Toplevel):
                 messagebox.showwarning("警告", f"課程【{new_name}】已存在，請使用修改節次功能。", parent=self)
                 return
                 
-            new_factor_str = simpledialog.askstring("新增課程", f"請輸入【{new_name}】的應計節次 (數字):", parent=self)
+            new_factor_str = simpledialog.askstring("新增課程", f"請輸入【{new_name}】的應計節次(一個禮拜有幾節課) (數字):", parent=self)
             try:
                 if new_factor_str is None: return
                 new_factor = int(new_factor_str)
@@ -206,12 +207,34 @@ class MissingAttendanceApp:
         self.master = master
         master.title("學務系統缺曠課查詢工具")
         
-        # 【修改】程式啟動時，載入課程因子
+        # 【新增】顯示啟動提醒視窗
+        self.show_startup_messages()
+
+        # 載入課程因子
         self.COURSE_FACTORS = load_factors_from_file()
         
         self.driver = None 
         self.create_widgets(master)
         self.set_status("準備就緒。請輸入學號和密碼。")
+
+    def show_startup_messages(self):
+        """在程式啟動時跳出提醒視窗"""
+        # 提醒 1: 關於課程因子設定
+        messagebox.showinfo(
+            "【重要提醒】計算總天數",
+            "本系統會自動計算您的缺曠總天數。\n\n"
+            "⚠️ 總天數的計算公式為：**總缺課節次 / 課程應計節次**\n\n"
+            "請務必點擊 **【編輯課程因子】** 按鈕，確保所有課程的應計節次是正確的，否則總天數會顯示 N/A 或計算錯誤！"
+        )
+        
+        # 提醒 2: 關於瀏覽器環境
+        messagebox.showinfo(
+            "【系統需求】瀏覽器依賴",
+            "本程式使用 Chrome 瀏覽器作為爬蟲工具。\n\n"
+            "✅ 請確認您的電腦已經安裝 **Google Chrome**。\n\n"
+            "如果程式無法啟動或閃退，請檢查 Chrome 瀏覽器版本是否為最新，並確保 **chromedriver.exe** 檔案與程式在同一目錄下。",
+        )
+
 
     def update_factors(self, new_factors: Dict[str, int]):
         """從編輯視窗接收並更新課程因子 (供主程式使用)"""
@@ -220,7 +243,6 @@ class MissingAttendanceApp:
     def open_edit_factors_window(self):
         """開啟編輯課程因子視窗"""
         # 傳遞當前因子的副本 (使用 .copy())，避免在編輯時直接影響主程式運行
-        # 只有在用戶點擊「儲存並關閉」時，才會通過 update_factors 更新主程式的 self.COURSE_FACTORS
         EditFactorsWindow(self.master, self.COURSE_FACTORS.copy(), self.update_factors)
 
 
@@ -247,7 +269,7 @@ class MissingAttendanceApp:
         self.run_button = ttk.Button(button_frame, text="開始查詢並計算", command=self.run_scraper)
         self.run_button.pack(side='left', padx=10)
 
-        # 【新增】編輯課程因子按鈕
+        # 編輯課程因子按鈕
         ttk.Button(button_frame, text="編輯課程因子", command=self.open_edit_factors_window).pack(side='left', padx=10)
 
         # --- 狀態訊息 ---
@@ -387,12 +409,14 @@ class MissingAttendanceApp:
                 if factor:
                     if total_absent > 0:
                         calculated_days = total_absent / factor
+                        # 格式化為小數點後兩位
                         calculated_days_str = f"{calculated_days:.2f}"
                     else:
                         calculated_days_str = "0.00"
                 else:
                      calculated_days_str = "N/A"
                      if total_absent > 0:
+                         # 警告訊息仍然顯示在狀態欄，方便用戶知道哪門課沒設因子
                          self.set_status(f"⚠️ 警告: 課程【{course_name}】缺少應計節次，總天數無法計算 (N/A)。", is_error=True)
 
                 row: List[str] = [course_name]
