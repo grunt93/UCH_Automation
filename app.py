@@ -1,187 +1,294 @@
+import time
+import os
+import sys
+import tkinter as tk
+from tkinter import ttk, messagebox
+from collections import defaultdict
+from typing import Set, Dict, Any, List, Tuple
+
+# 引入 Selenium 相關模組
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait 
 from selenium.webdriver.support import expected_conditions as EC 
-import time
-from collections import defaultdict 
-from typing import Set, Dict, Any, List
+from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
 
 # ===============================================
-#                【設定變數區】
+#                【設定常數區】
 # ===============================================
 
-# 替換成您的目標登入頁面網址
+# 網站 URL
 LOGIN_URL = "https://std.uch.edu.tw/Std_Xerox/Login_Index.aspx" 
-YOUR_ACCOUNT = "D11213201" # 替換成您的學號/帳號
-MY_PASSWORD = "Gg0976682163" # 替換成您的密碼
-
-# 登入成功後要跳轉的目標網址 (缺曠記錄頁面)
 TARGET_URL = "https://std.uch.edu.tw/Std_Xerox/Miss_ct.aspx" 
-
-# 缺曠記錄表格的 ID
 TABLE_ID = "ctl00_ContentPlaceHolder1_gw_absent"
 
-# 課程應計節次因子 (作為主要列印清單)
+# 課程應計節次因子 (用戶手動維護的資料)
 COURSE_FACTORS: Dict[str, int] = {
     "程式設計與應用(三)": 4,
     "資料庫系統與實習": 2,
     "網頁資料庫程式開發實作": 4,
     "廣域網路與實習": 4,
     "性別與文化": 2,
-    "RHCE紅帽Linux系統自動化": 4, 
+    "RHCE紅帽Linux系統自動化": 4,
 }
+# 假別類型
+ABSENCE_TYPES = ['事假', '病假', '遲到', '曠課']
 
-try:
-    # 1. 初始化瀏覽器並訪問登入頁面
-    driver = webdriver.Chrome()
-    driver.get(LOGIN_URL)
-    print(f"已成功訪問登入頁面: {LOGIN_URL}")
-    
-    # 2. 執行登入操作
-    account_input = driver.find_element(By.NAME, "account")
-    password_input = driver.find_element(By.NAME, "account_pass")
-    sign_in_button = driver.find_element(By.NAME, "SignIn")
-    
-    account_input.send_keys(YOUR_ACCOUNT)
-    password_input.send_keys(MY_PASSWORD) 
-    print("帳號密碼已填寫完畢。")
-    
-    sign_in_button.click()
-    print("已點擊登入按鈕。")
+class MissingAttendanceApp:
+    def __init__(self, master):
+        self.master = master
+        master.title("學務系統缺曠課查詢工具")
         
-    # 給予伺服器一點時間處理登入請求並跳轉 (例如 3 秒)
-    print("等待 3 秒讓登入流程完成...")
-    time.sleep(3)
-    
-    # 3. 直接跳轉到目標頁面 (Miss_ct.aspx)
-    driver.get(TARGET_URL)
-    print(f"✅ 已直接跳轉到目標頁面: {TARGET_URL}")
-    
-    # 4. 擷取表格資訊
-    
-    # 等待表格元素出現 (最多 10 秒)
-    print(f"等待表格 ({TABLE_ID}) 載入...")
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, TABLE_ID))
-    )
-    
-    table = driver.find_element(By.ID, TABLE_ID)
-    rows = table.find_elements(By.TAG_NAME, "tr")
-    
-    raw_data: List[Any] = [] 
-    
-    if len(rows) > 1:
-        for row in rows[1:]:
-            cols = row.find_elements(By.TAG_NAME, "td")
-            if cols:
-                # 抓取：[課程名稱(索引2), 狀態(索引3)]
-                course_name = cols[2].text
-                absence_status = cols[3].text
-                raw_data.append((course_name, absence_status))
+        # 儲存瀏覽器實例
+        self.driver = None 
+        
+        # 創建 GUI 介面元素
+        self.create_widgets(master)
+        
+        # 設置狀態訊息
+        self.set_status("準備就緒。請輸入學號和密碼。")
 
-    # 5. 統計數據
-    
-    # 結構: {課程名稱: {狀態: 數量, 總缺課數量: 數量}}
-    summary_data = defaultdict(lambda: defaultdict(float)) 
-    absence_types = ['事假', '病假', '遲到', '曠課'] 
-    
-    # 遍歷原始資料 (課程名稱, 狀態)
-    for course_name, status in raw_data: 
-        if status in absence_types:
-            # 計算總節次數 (總缺課數量)
-            summary_data[course_name][status] += 1
-            summary_data[course_name]['總缺課數量'] += 1
+    def create_widgets(self, master):
+        # --- 登入資訊框架 ---
+        input_frame = ttk.Frame(master, padding="10")
+        input_frame.pack(fill='x')
+
+        # 帳號
+        ttk.Label(input_frame, text="學號/帳號:").grid(row=0, column=0, padx=5, pady=5, sticky='w')
+        self.account_entry = ttk.Entry(input_frame, width=30)
+        self.account_entry.insert(0, "D11213201") # 範例學號
+        self.account_entry.grid(row=0, column=1, padx=5, pady=5)
+
+        # 密碼
+        ttk.Label(input_frame, text="密碼:").grid(row=1, column=0, padx=5, pady=5, sticky='w')
+        self.password_entry = ttk.Entry(input_frame, width=30, show='*')
+        self.password_entry.insert(0, "Gg0976682163") # 範例密碼
+        self.password_entry.grid(row=1, column=1, padx=5, pady=5)
+
+        # 運行按鈕
+        self.run_button = ttk.Button(input_frame, text="開始查詢並計算", command=self.run_scraper)
+        self.run_button.grid(row=2, column=0, columnspan=2, pady=10)
+
+        # --- 狀態訊息 ---
+        self.status_label = ttk.Label(master, text="", foreground="blue", padding="10")
+        self.status_label.pack(fill='x')
+        
+        # --- 結果顯示框架 ---
+        result_frame = ttk.Frame(master, padding="10")
+        result_frame.pack(fill='both', expand=True)
+        
+        # 定義 Treeview (表格)
+        columns = ['課程名稱'] + ABSENCE_TYPES + ['總缺課數量', '總天數']
+        self.tree = ttk.Treeview(result_frame, columns=columns, show='headings')
+        
+        # 設置欄位標題與寬度
+        self.tree.heading('課程名稱', text='課程名稱', anchor='w')
+        self.tree.column('課程名稱', width=200, anchor='w')
+        
+        # 其他數值欄位
+        for col in ABSENCE_TYPES:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=60, anchor='center')
+        
+        self.tree.heading('總缺課數量', text='總節次')
+        self.tree.column('總缺課數量', width=70, anchor='center')
+        
+        self.tree.heading('總天數', text='總天數')
+        self.tree.column('總天數', width=70, anchor='center')
+        
+        # 添加滾動條
+        vsb = ttk.Scrollbar(result_frame, orient="vertical", command=self.tree.yview)
+        vsb.pack(side='right', fill='y')
+        self.tree.configure(yscrollcommand=vsb.set)
+        
+        self.tree.pack(fill='both', expand=True)
+
+    def set_status(self, message, is_error=False):
+        """更新狀態欄的訊息和顏色"""
+        self.status_label.config(text=message)
+        self.status_label.config(foreground="red" if is_error else "blue")
+        self.master.update_idletasks() # 強制更新介面
+
+    def get_driver_path(self, driver_name="chromedriver.exe"):
+        """獲取 ChromeDriver 的路徑 (用於打包兼容性)"""
+        # 檢查是否運行在 PyInstaller 打包環境中
+        if getattr(sys, 'frozen', False):
+            # PyInstaller 設置的臨時路徑
+            base_path = sys._MEIPASS
+        else:
+            # 一般 Python 腳本運行時的路徑
+            base_path = os.path.dirname(__file__)
+
+        # 組合驅動程式的完整路徑
+        return os.path.join(base_path, driver_name)
+
+    def scrape_and_calculate(self, account: str, password: str) -> List[List[str]]:
+        """
+        核心爬蟲和計算邏輯
+        返回整理好的表格數據 (List[List[str]])
+        """
+        self.set_status("1/7 正在初始化瀏覽器...")
+        
+        try:
+            # 嘗試使用自動管理驅動，如果失敗，則使用手動路徑
+            try:
+                self.driver = webdriver.Chrome()
+            except WebDriverException:
+                # 嘗試使用 PyInstaller 兼容路徑 (假設備份驅動在同目錄)
+                driver_path = self.get_driver_path()
+                self.driver = webdriver.Chrome(executable_path=driver_path)
             
-    # 6. 列印計算後的總結表格
-    
-    print("\n" + "="*85)
-    print("                   【缺曠記錄總結與計算結果】")
-    print("="*85)
-    
-    # --- 聯集邏輯 ---
-    # 1. 取得所有在網頁上有記錄的課程名稱 (集合 A)
-    recorded_courses: Set[str] = set(summary_data.keys())
-    # 2. 取得所有在 COURSE_FACTORS 中定義的課程名稱 (集合 B)
-    factor_courses: Set[str] = set(COURSE_FACTORS.keys())
-    
-    # 3. 創建聯集 (A U B)，並進行排序，以 factor_courses 為優先順序
-    # 將 factor_courses 放在前面，確保它們的順序優先
-    # 這裡使用 factor_courses + 額外記錄的課程（去重）來決定輸出的順序
-    all_courses_set = factor_courses.union(recorded_courses)
-    
-    # 將 COURSE_FACTORS 中的課程放在前面，然後是其他有記錄的課程
-    # 為了保持一定的順序性 (例如按字母排序)，這裡我們使用排序後的集合
-    # 否則直接使用 list(all_courses_set) 順序會比較隨機
-    
-    # 優先保持 COURSE_FACTORS 的定義順序，然後是其他課程的字母順序
-    final_course_list: List[str] = list(factor_courses)
-    for course in sorted(list(recorded_courses - factor_courses)):
-        final_course_list.append(course)
-    # --- 聯集邏輯結束 ---
+            self.driver.get(LOGIN_URL)
+            self.set_status(f"2/7 已訪問登入頁面: {LOGIN_URL}")
+            time.sleep(1) # 稍等
 
+            # 2. 執行登入操作
+            account_input = self.driver.find_element(By.NAME, "account")
+            password_input = self.driver.find_element(By.NAME, "account_pass")
+            sign_in_button = self.driver.find_element(By.NAME, "SignIn")
+            
+            account_input.send_keys(account)
+            password_input.send_keys(password) 
+            self.set_status("3/7 帳號密碼已填寫，正在登入...")
+            
+            sign_in_button.click()
+            
+            # 給予伺服器一點時間處理登入請求並跳轉 (例如 3 秒)
+            time.sleep(3)
+            
+            # 3. 直接跳轉到目標頁面 (Miss_ct.aspx)
+            self.driver.get(TARGET_URL)
+            self.set_status(f"4/7 登入成功，已跳轉到缺曠記錄頁面: {TARGET_URL}")
+            
+            # 4. 擷取表格資訊
+            self.set_status(f"5/7 正在抓取表格數據...")
+            
+            # 等待表格元素出現 (最多 10 秒)
+            WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.ID, TABLE_ID))
+            )
+            
+            table = self.driver.find_element(By.ID, TABLE_ID)
+            rows = table.find_elements(By.TAG_NAME, "tr")
+            
+            raw_data: List[Tuple[str, str]] = [] 
+            
+            if len(rows) > 1:
+                for row in rows[1:]:
+                    cols = row.find_elements(By.TAG_NAME, "td")
+                    if cols:
+                        # 抓取：[課程名稱(索引2), 狀態(索引3)]
+                        course_name = cols[2].text
+                        absence_status = cols[3].text
+                        raw_data.append((course_name, absence_status))
 
-    if final_course_list:
-        # 準備要顯示的欄位 
-        columns = ['課程名稱'] + absence_types + ['總缺課數量', '總天數']
-        output_rows = [columns]
-        
-        for course_name in final_course_list:
-            # 即使課程不在 summary_data 中 (例如: 該課程在 COURSE_FACTORS 但無缺曠記錄)
-            # defaultdict 機制會返回一個空的計數器 (所有數值為 0.0)
-            counts = summary_data[course_name] 
+            # 5. 統計數據
+            self.set_status("6/7 正在計算總結數據...")
+            
+            # 結構: {課程名稱: {狀態: 數量, 總缺課數量: 數量}}
+            summary_data = defaultdict(lambda: defaultdict(float)) 
+            
+            for course_name, status in raw_data: 
+                if status in ABSENCE_TYPES:
+                    summary_data[course_name][status] += 1
+                    summary_data[course_name]['總缺課數量'] += 1
+                    
+            # 6. 整理最終輸出列表 (聯集邏輯)
+            
+            # 取得所有在網頁上有記錄的課程名稱
+            recorded_courses: Set[str] = set(summary_data.keys())
+            # 取得所有在 COURSE_FACTORS 中定義的課程名稱
+            factor_courses: Set[str] = set(COURSE_FACTORS.keys())
+            
+            # 創建聯集：先放 COURSE_FACTORS 中的課程，再放其他有記錄的課程
+            final_course_list: List[str] = list(factor_courses)
+            for course in sorted(list(recorded_courses - factor_courses)):
+                final_course_list.append(course)
+                
+            output_rows = []
+            
+            for course_name in final_course_list:
+                counts = summary_data[course_name] 
 
-            total_absent = counts.get('總缺課數量', 0)
-            factor = COURSE_FACTORS.get(course_name) # 嘗試從 COURSE_FACTORS 取得因子
-            calculated_days_str = "" 
+                total_absent = counts.get('總缺課數量', 0)
+                factor = COURSE_FACTORS.get(course_name)
+                calculated_days_str = "" 
 
-            # 計算總天數
-            if factor:
-                # 因子存在，計算總天數
-                if total_absent > 0:
-                    calculated_days = total_absent / factor
-                    calculated_days_str = f"{calculated_days:.2f}"
+                # 計算總天數
+                if factor:
+                    if total_absent > 0:
+                        calculated_days = total_absent / factor
+                        calculated_days_str = f"{calculated_days:.2f}"
+                    else:
+                        calculated_days_str = "0.00"
                 else:
-                    calculated_days_str = "0.00"
-            else:
-                 # 因子不存在，顯示 N/A
-                 calculated_days_str = "N/A"
-                 if total_absent > 0:
-                     print(f"⚠️ 警告: 課程【{course_name}】有 {int(total_absent)} 筆缺課記錄，但缺少應計節次，總天數無法計算 (N/A)。請更新 COURSE_FACTORS。")
+                     calculated_days_str = "N/A"
+                     # 警告訊息仍然顯示在狀態欄
+                     if total_absent > 0:
+                         self.set_status(f"⚠️ 警告: 課程【{course_name}】缺少應計節次，總天數無法計算 (N/A)。", is_error=True)
 
-            row = [course_name]
-            for status in absence_types:
-                row.append(int(counts.get(status, 0))) # 節次數量為整數
-            row.append(int(total_absent)) # 總節次數量為整數
+                row: List[str] = [course_name]
+                for status in ABSENCE_TYPES:
+                    row.append(str(int(counts.get(status, 0)))) 
+                row.append(str(int(total_absent))) 
+                row.append(calculated_days_str) 
+                
+                output_rows.append(row)
             
-            row.append(calculated_days_str) # 總天數
-            output_rows.append(row)
-            
-        # 格式化輸出
-        str_output_rows = [[str(item) for item in row] for row in output_rows]
+            self.set_status("7/7 資料抓取與計算完成！")
+            return output_rows
 
-        # 計算每個欄位的最大寬度
-        col_widths = [max(len(item) for item in col) for col in zip(*str_output_rows)]
-        # 確保「課程名稱」欄位有足夠的最小寬度
-        col_widths[0] = max(col_widths[0], 12) 
+        except (TimeoutException, NoSuchElementException) as e:
+            self.set_status(f"錯誤：抓取頁面元素或登入超時。請檢查帳密或網路。錯誤: {e.__class__.__name__}", is_error=True)
+            return []
+        except WebDriverException as e:
+            self.set_status(f"錯誤：瀏覽器驅動程式問題。請確保 Chrome 和 ChromeDriver 版本匹配。錯誤: {e.__class__.__name__}", is_error=True)
+            return []
+        except Exception as e:
+            self.set_status(f"發生未預期的錯誤: {e}", is_error=True)
+            return []
+        finally:
+            if self.driver:
+                self.driver.quit()
+                self.driver = None
 
-        for i, row in enumerate(str_output_rows):
-            formatted_row = " | ".join(f"{item:<{col_widths[j]}}" for j, item in enumerate(row))
-            print(formatted_row)
-            if i == 0:
-                print("-" * (sum(col_widths) + 3 * (len(col_widths) - 1)))
-    else:
-        print("未找到任何課程資訊（COURSE_FACTORS 為空且網頁上無缺曠記錄）。")
+    def run_scraper(self):
+        """點擊按鈕時執行的函數"""
         
-    print("="*85)
-    
-    # 7. 結束
-    time.sleep(5) 
-    driver.quit()
-    print("\n程式執行完畢，瀏覽器已關閉。")
+        # 清除舊的表格數據
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+            
+        account = self.account_entry.get().strip()
+        password = self.password_entry.get()
+        
+        if not account or not password:
+            messagebox.showerror("錯誤", "請輸入學號和密碼！")
+            return
+            
+        self.run_button.config(state=tk.DISABLED, text="查詢中...")
+        self.set_status("開始運行爬蟲程式...")
+        
+        # 執行核心邏輯
+        data = self.scrape_and_calculate(account, password)
+        
+        # 顯示結果到 Treeview
+        if data:
+            self.set_status(f"查詢完成。總計找到 {len(data)} 門課程記錄。", is_error=False)
+            for row in data:
+                # 插入數據到 Treeview
+                self.tree.insert('', tk.END, values=row)
+        else:
+            self.set_status("查詢失敗或未找到任何缺曠記錄。", is_error=True)
 
-except Exception as e:
-    print(f"初始化或整體執行過程中發生錯誤: {e}")
-    try:
-        driver.quit()
-    except:
-        pass
+        self.run_button.config(state=tk.NORMAL, text="開始查詢並計算")
+
+
+if __name__ == "__main__":
+    # 創建主視窗
+    root = tk.Tk()
+    app = MissingAttendanceApp(root)
+    # 設置視窗大小
+    root.geometry("700x500") 
+    # 啟動主循環
+    root.mainloop()
