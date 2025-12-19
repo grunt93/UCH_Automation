@@ -1,0 +1,113 @@
+<table cellspacing="0" cellpadding="4" rules="all" border="1" id="ctl00_ContentPlaceHolder1_gw_absent" style="color:#333333;width:99%;border-collapse:collapse;font-size: 11pt; text-align: center">
+				<tr style="color:White;background-color:#507CD1;font-weight:bold;">
+					<th scope="col">假單編號</th><th scope="col" style="width:8%;">週別</th><th scope="col" style="width:20%;">時間</th><th scope="col" style="width:15%;">假別</th><th scope="col" style="width:32%;">狀態</th><th scope="col" style="width:10%;">&nbsp;</th>
+				</tr><tr style="background-color:#EFF3FB;">
+					<td>
+                            <a id="ctl00_ContentPlaceHolder1_gw_absent_ctl02_link_abs_id" href="javascript:__doPostBack('ctl00$ContentPlaceHolder1$gw_absent$ctl02$link_abs_id','')" style="text-decoration:underline;">28003</a>
+                        </td><td>10</td><td>114/11/16 - 114/11/22</td><td>事假</td><td>尚未完成銷假程序，請依校內規定辦理。(列印=&gt;送審)</td><td>
+                            <br />
+                            
+                            <input type="submit" name="ctl00$ContentPlaceHolder1$gw_absent$ctl02$btn_prt1" value="列印假單" id="ctl00_ContentPlaceHolder1_gw_absent_ctl02_btn_prt1" style="color:Red;" />
+                            
+                            
+                            <br />
+                            &nbsp;<br />
+                        </td>
+				</tr><tr style="background-color:White;">
+					<td>
+                            <a id="ctl00_ContentPlaceHolder1_gw_absent_ctl03_link_abs_id" href="javascript:__doPostBack('ctl00$ContentPlaceHolder1$gw_absent$ctl03$link_abs_id','')" style="text-decoration:underline;">26454</a>
+                        </td><td>8 </td><td>114/11/02 - 114/11/08</td><td>事假</td><td>尚未完成銷假程序，請依校內規定辦理。(列印=&gt;送審)</td><td>
+                            <br />
+                            
+                            <input type="submit" name="ctl00$ContentPlaceHolder1$gw_absent$ctl03$btn_prt1" value="列印假單" id="ctl00_ContentPlaceHolder1_gw_absent_ctl03_btn_prt1" style="color:Red;" />
+                            
+                            
+                            <br />
+                            &nbsp;<br />
+                        </td>
+				</tr><tr style="background-color:#EFF3FB;">
+					<td>
+                            <a id="ctl00_ContentPlaceHolder1_gw_absent_ctl04_link_abs_id" href="javascript:__doPostBack('ctl00$ContentPlaceHolder1$gw_absent$ctl04$link_abs_id','')" style="text-decoration:underline;">21753</a>
+                        </td><td>7 </td><td>114/10/26 - 114/11/01</td><td>事假</td><td>銷假完成</td><td>
+                            <br />
+                            
+                            
+                            
+                            <input type="submit" name="ctl00$ContentPlaceHolder1$gw_absent$ctl04$btn_prt2" value="列印證明" id="ctl00_ContentPlaceHolder1_gw_absent_ctl04_btn_prt2" />
+                            <br />
+                            &nbsp;<br />
+                        </td>
+				</tr><tr style="background-color:White;">
+					<td>
+                            <a id="ctl00_ContentPlaceHolder1_gw_absent_ctl05_link_abs_id" href="javascript:__doPostBack('ctl00$ContentPlaceHolder1$gw_absent$ctl05$link_abs_id','')" style="text-decoration:underline;">18038</a>
+                        </td><td>6 </td><td>114/10/19 - 114/10/25</td><td>事假</td><td>銷假完成</td><td>
+                            <br />
+                            
+                            
+                            
+                            <input type="submit" name="ctl00$ContentPlaceHolder1$gw_absent$ctl05$btn_prt2" value="列印證明" id="ctl00_ContentPlaceHolder1_gw_absent_ctl05_btn_prt2" />
+                            <br />
+                            &nbsp;<br />
+                        </td>
+				</tr><tr style="background-color:#EFF3FB;">
+					<td>
+                            <a id="ctl00_ContentPlaceHolder1_gw_absent_ctl06_link_abs_id" href="javascript:__doPostBack('ctl00$ContentPlaceHolder1$gw_absent$ctl06$link_abs_id','')" style="text-decoration:underline;">13054</a>
+                        </td><td>5 </td><td>114/10/12 - 114/10/18</td><td>事假</td><td>銷假完成</td><td>
+                            <br />
+                            
+                            
+                            
+                            <input type="submit" name="ctl00$ContentPlaceHolder1$gw_absent$ctl06$btn_prt2" value="列印證明" id="ctl00_ContentPlaceHolder1_gw_absent_ctl06_btn_prt2" />
+                            <br />
+                            &nbsp;<br />
+                        </td>
+				</tr><tr style="background-color:White;">
+					<td>
+                            <a id="ctl00_ContentPlaceHolder1_gw_absent_ctl07_link_abs_id" href="javascript:__doPostBack('ctl00$ContentPlaceHolder1$gw_absent$ctl07$link_abs_id','')" style="text-decoration:underline;">9782</a>
+                        </td><td>4 </td><td>114/10/05 - 114/10/11</td><td>事假</td><td>銷假完成</td><td>
+                            <br />
+                            
+                            
+                            
+                            <input type="submit" name="ctl00$ContentPlaceHolder1$gw_absent$ctl07$btn_prt2" value="列印證明" id="ctl00_ContentPlaceHolder1_gw_absent_ctl07_btn_prt2" />
+                            <br />
+                            &nbsp;<br />
+                        </td>
+				</tr><tr style="background-color:#EFF3FB;">
+					<td>
+                            <a id="ctl00_ContentPlaceHolder1_gw_absent_ctl08_link_abs_id" href="javascript:__doPostBack('ctl00$ContentPlaceHolder1$gw_absent$ctl08$link_abs_id','')" style="text-decoration:underline;">5717</a>
+                        </td><td>3 </td><td>114/09/28 - 114/10/04</td><td>病假</td><td>銷假完成</td><td>
+                            <br />
+                            
+                            
+                            
+                            <input type="submit" name="ctl00$ContentPlaceHolder1$gw_absent$ctl08$btn_prt2" value="列印證明" id="ctl00_ContentPlaceHolder1_gw_absent_ctl08_btn_prt2" />
+                            <br />
+                            &nbsp;<br />
+                        </td>
+				</tr><tr style="background-color:White;">
+					<td>
+                            <a id="ctl00_ContentPlaceHolder1_gw_absent_ctl09_link_abs_id" href="javascript:__doPostBack('ctl00$ContentPlaceHolder1$gw_absent$ctl09$link_abs_id','')" style="text-decoration:underline;">5718</a>
+                        </td><td>2 </td><td>114/09/21 - 114/09/27</td><td>病假</td><td>銷假完成</td><td>
+                            <br />
+                            
+                            
+                            
+                            <input type="submit" name="ctl00$ContentPlaceHolder1$gw_absent$ctl09$btn_prt2" value="列印證明" id="ctl00_ContentPlaceHolder1_gw_absent_ctl09_btn_prt2" />
+                            <br />
+                            &nbsp;<br />
+                        </td>
+				</tr><tr style="background-color:#EFF3FB;">
+					<td>
+                            <a id="ctl00_ContentPlaceHolder1_gw_absent_ctl10_link_abs_id" href="javascript:__doPostBack('ctl00$ContentPlaceHolder1$gw_absent$ctl10$link_abs_id','')" style="text-decoration:underline;">5715</a>
+                        </td><td>1 </td><td>114/09/14 - 114/09/20</td><td>事假</td><td>銷假完成</td><td>
+                            <br />
+                            
+                            
+                            
+                            <input type="submit" name="ctl00$ContentPlaceHolder1$gw_absent$ctl10$btn_prt2" value="列印證明" id="ctl00_ContentPlaceHolder1_gw_absent_ctl10_btn_prt2" />
+                            <br />
+                            &nbsp;<br />
+                        </td>
+				</tr>
+			</table>

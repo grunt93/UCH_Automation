@@ -1,6 +1,6 @@
 # 爬蟲核心邏輯
 
-import os # <--- 修正：新增 os 模組導入
+import os 
 import time
 from collections import defaultdict
 from typing import Set, Dict, List, Tuple
@@ -35,8 +35,12 @@ def scrape_and_calculate(
     核心爬蟲和計算邏輯
     返回整理好的表格數據 (List[List[str]])
     """
+    
+    # ***新增常數: 假單列印頁面 URL***
+    XEROX_URL = "https://std.uch.edu.tw/Std_Xerox/Xerox.aspx"
+    
     driver = None
-    set_status_callback("1/7 正在初始化瀏覽器...")
+    set_status_callback("1/9 正在初始化瀏覽器...")
     
     try:
         # 嘗試初始化驅動
@@ -48,7 +52,7 @@ def scrape_and_calculate(
             driver = webdriver.Chrome(executable_path=driver_path)
         
         driver.get(config_data.LOGIN_URL)
-        set_status_callback(f"2/7 已訪問登入頁面: {config_data.LOGIN_URL}")
+        set_status_callback(f"2/9 已訪問登入頁面: {config_data.LOGIN_URL}")
         time.sleep(1) 
 
         # 2. 執行登入操作
@@ -58,17 +62,21 @@ def scrape_and_calculate(
         
         account_input.send_keys(account)
         password_input.send_keys(password) 
-        set_status_callback("3/7 帳號密碼已填寫，正在登入...")
+        set_status_callback("3/9 帳號密碼已填寫，正在登入...")
         
         sign_in_button.click()
         time.sleep(3)
         
-        # 3. 直接跳轉到目標頁面
-        driver.get(config_data.TARGET_URL)
-        set_status_callback(f"4/7 登入成功，已跳轉到缺曠記錄頁面: {config_data.TARGET_URL}")
+        # ==========================================================
+        # 步驟 A: 抓取缺曠課記錄 (原 TARGET_URL)
+        # ==========================================================
         
-        # 4. 擷取表格資訊
-        set_status_callback(f"5/7 正在抓取表格數據...")
+        # 4. 跳轉到缺曠記錄頁面
+        driver.get(config_data.TARGET_URL)
+        set_status_callback(f"4/9 登入成功，已跳轉到缺曠記錄頁面: {config_data.TARGET_URL}")
+        
+        # 5. 擷取缺曠課表格資訊
+        set_status_callback(f"5/9 正在抓取缺曠課表格數據...")
         
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.ID, config_data.TABLE_ID))
@@ -77,25 +85,89 @@ def scrape_and_calculate(
         table = driver.find_element(By.ID, config_data.TABLE_ID)
         rows = table.find_elements(By.TAG_NAME, "tr")
         
-        raw_data: List[Tuple[str, str]] = [] 
+        # raw_data 結構: (course_name, absence_status, week_number, section)
+        raw_data: List[Tuple[str, str, str, str]] = [] 
         if len(rows) > 1:
             for row in rows[1:]:
                 cols = row.find_elements(By.TAG_NAME, "td")
-                if cols:
+                if cols and len(cols) >= 5: 
+                    week_number = cols[0].text
                     course_name = cols[2].text
                     absence_status = cols[3].text
-                    raw_data.append((course_name, absence_status))
+                    section = cols[4].text
+                    
+                    raw_data.append((course_name, absence_status, week_number, section))
+        
+        # 輸出原始缺曠課數據到終端機
+        print("\n" + "="*70)
+        print("【原始缺曠課記錄 (Miss_ct.aspx) - 終端機輸出】")
+        print("格式: (課程名稱, 缺曠狀態, 週別, 節次)")
+        print("-"*70)
+        if raw_data:
+            for course_name, status, week, section in raw_data:
+                print(f"({course_name}, {status}, 週{week}, 節次{section})")
+        else:
+            print("無缺曠課記錄。")
+        print("="*70 + "\n")
 
-        # 5. 統計數據
-        set_status_callback("6/7 正在計算總結數據...")
+
+        # ==========================================================
+        # 步驟 B: 抓取假單記錄 (新頁面: Xerox.aspx)
+        # ==========================================================
+
+        # 6. 跳轉到假單列印頁面
+        driver.get(XEROX_URL)
+        set_status_callback(f"6/9 已跳轉到假單列印頁面: {XEROX_URL}")
+        
+        # 7. 擷取假單表格資訊
+        set_status_callback(f"7/9 正在抓取假單表格數據...")
+        
+        # 使用相同的 TABLE_ID, 假單回傳資料.txt 中 ID 確實是 ctl00_ContentPlaceHolder1_gw_absent
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, config_data.TABLE_ID)) 
+        )
+        
+        xerox_table = driver.find_element(By.ID, config_data.TABLE_ID)
+        xerox_rows = xerox_table.find_elements(By.TAG_NAME, "tr")
+        
+        xerox_data: List[str] = [] 
+        if len(xerox_rows) > 1:
+            for row in xerox_rows[1:]:
+                cols = row.find_elements(By.TAG_NAME, "td")
+                if cols and len(cols) >= 2:
+                    # 根據 列印假單回傳資料.txt，週別是第二個欄位 (索引 1)
+                    week_number = cols[1].text.strip()
+                    xerox_data.append(week_number)
+
+        # 輸出假單週別到終端機
+        print("\n" + "="*70)
+        print("【假單記錄週別 (Xerox.aspx) - 終端機輸出】")
+        print("格式: 週別")
+        print("-"*70)
+        if xerox_data:
+            # 為了避免多個週別重複顯示，這裡可以考慮只顯示不重複的週別
+            unique_weeks = sorted(list(set(xerox_data)), key=lambda x: int(x.split(' ')[0]))
+            for week in unique_weeks:
+                print(f"假單記錄於: 週{week}")
+        else:
+            print("無假單記錄。")
+        print("="*70 + "\n")
+        
+        # ==========================================================
+        # 步驟 C: 統計計算 (只使用步驟 A 的 raw_data)
+        # ==========================================================
+        
+        set_status_callback("8/9 正在計算總結數據...")
+        
+        # 統計數據 (只使用第一個頁面抓取的 raw_data，忽略週別和節次)
         summary_data = defaultdict(lambda: defaultdict(float)) 
         
-        for course_name, status in raw_data: 
+        for course_name, status, _, _ in raw_data: 
             if status in config_data.ABSENCE_TYPES:
                 summary_data[course_name][status] += 1
                 summary_data[course_name]['總缺課數量'] += 1
                 
-        # 6. 整理最終輸出列表
+        # 整理最終輸出列表
         recorded_courses: Set[str] = set(summary_data.keys())
         factor_courses: Set[str] = set(course_factors.keys())
         
@@ -131,7 +203,7 @@ def scrape_and_calculate(
             
             output_rows.append(row)
         
-        set_status_callback("7/7 資料抓取與計算完成！")
+        set_status_callback("9/9 資料抓取與計算完成！")
         return output_rows
 
     except (TimeoutException, NoSuchElementException) as e:

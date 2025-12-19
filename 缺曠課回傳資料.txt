@@ -1,0 +1,183 @@
+<table cellspacing="0" cellpadding="4" rules="all" border="1" id="ctl00_ContentPlaceHolder1_gw_absent" style="color:#333333;width:96%;border-collapse:collapse;">
+				<tr style="color:White;background-color:#5D7B9D;font-weight:bold;">
+					<th scope="col" style="width:15%;">週別</th><th scope="col" style="width:15%;">日期</th><th scope="col" style="width:30%;">課號</th><th scope="col" style="width:20%;">狀態</th><th scope="col" style="width:20%;">節次</th>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>1</td><td>114/09/16</td><td>程式設計與應用(三)</td><td>事假</td><td>211</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>1</td><td>114/09/16</td><td>程式設計與應用(三)</td><td>事假</td><td>212</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>1</td><td>114/09/16</td><td>程式設計與應用(三)</td><td>事假</td><td>213</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>1</td><td>114/09/16</td><td>程式設計與應用(三)</td><td>事假</td><td>214</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>1</td><td>114/09/17</td><td>資料庫系統與實習</td><td>事假</td><td>311</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>1</td><td>114/09/17</td><td>資料庫系統與實習</td><td>事假</td><td>312</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>1</td><td>114/09/18</td><td>網頁資料庫程式開發實作</td><td>事假</td><td>411</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>1</td><td>114/09/18</td><td>網頁資料庫程式開發實作</td><td>事假</td><td>412</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>1</td><td>114/09/18</td><td>網頁資料庫程式開發實作</td><td>事假</td><td>413</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>1</td><td>114/09/18</td><td>網頁資料庫程式開發實作</td><td>事假</td><td>414</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>2</td><td>114/09/22</td><td>廣域網路與實習</td><td>病假</td><td>111</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>2</td><td>114/09/22</td><td>廣域網路與實習</td><td>病假</td><td>112</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>2</td><td>114/09/22</td><td>廣域網路與實習</td><td>病假</td><td>113</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>2</td><td>114/09/22</td><td>廣域網路與實習</td><td>病假</td><td>114</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>2</td><td>114/09/23</td><td>程式設計與應用(三)</td><td>遲到</td><td>211</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>2</td><td>114/09/24</td><td>資料庫系統與實習</td><td>病假</td><td>311</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>2</td><td>114/09/24</td><td>資料庫系統與實習</td><td>病假</td><td>312</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>2</td><td>114/09/24</td><td>性別與文化</td><td>病假</td><td>313</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>2</td><td>114/09/24</td><td>性別與文化</td><td>病假</td><td>314</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>3</td><td>114/09/30</td><td>程式設計與應用(三)</td><td>病假</td><td>211</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>3</td><td>114/09/30</td><td>程式設計與應用(三)</td><td>病假</td><td>212</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>3</td><td>114/09/30</td><td>程式設計與應用(三)</td><td>病假</td><td>213</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>3</td><td>114/09/30</td><td>程式設計與應用(三)</td><td>病假</td><td>214</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>3</td><td>114/10/01</td><td>資料庫系統與實習</td><td>病假</td><td>311</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>3</td><td>114/10/01</td><td>資料庫系統與實習</td><td>病假</td><td>312</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>4</td><td>114/10/07</td><td>程式設計與應用(三)</td><td>事假</td><td>211</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>4</td><td>114/10/07</td><td>程式設計與應用(三)</td><td>事假</td><td>212</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>4</td><td>114/10/07</td><td>程式設計與應用(三)</td><td>事假</td><td>213</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>4</td><td>114/10/07</td><td>程式設計與應用(三)</td><td>事假</td><td>214</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>4</td><td>114/10/08</td><td>資料庫系統與實習</td><td>事假</td><td>311</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>4</td><td>114/10/08</td><td>資料庫系統與實習</td><td>事假</td><td>312</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>5</td><td>114/10/14</td><td>程式設計與應用(三)</td><td>事假</td><td>211</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>5</td><td>114/10/14</td><td>程式設計與應用(三)</td><td>事假</td><td>212</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>5</td><td>114/10/14</td><td>程式設計與應用(三)</td><td>事假</td><td>213</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>5</td><td>114/10/14</td><td>程式設計與應用(三)</td><td>事假</td><td>214</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>5</td><td>114/10/15</td><td>資料庫系統與實習</td><td>曠課</td><td>311</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>5</td><td>114/10/16</td><td>網頁資料庫程式開發實作</td><td>事假</td><td>411</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>5</td><td>114/10/16</td><td>網頁資料庫程式開發實作</td><td>事假</td><td>412</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>5</td><td>114/10/16</td><td>網頁資料庫程式開發實作</td><td>事假</td><td>413</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>5</td><td>114/10/16</td><td>網頁資料庫程式開發實作</td><td>事假</td><td>414</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>6</td><td>114/10/20</td><td>廣域網路與實習</td><td>事假</td><td>111</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>6</td><td>114/10/20</td><td>廣域網路與實習</td><td>事假</td><td>112</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>6</td><td>114/10/20</td><td>廣域網路與實習</td><td>事假</td><td>113</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>6</td><td>114/10/20</td><td>廣域網路與實習</td><td>事假</td><td>114</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>6</td><td>114/10/21</td><td>程式設計與應用(三)</td><td>遲到</td><td>211</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>6</td><td>114/10/22</td><td>資料庫系統與實習</td><td>事假</td><td>311</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>6</td><td>114/10/22</td><td>資料庫系統與實習</td><td>事假</td><td>312</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>6</td><td>114/10/23</td><td>網頁資料庫程式開發實作</td><td>事假</td><td>411</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>6</td><td>114/10/23</td><td>網頁資料庫程式開發實作</td><td>事假</td><td>412</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>6</td><td>114/10/23</td><td>網頁資料庫程式開發實作</td><td>事假</td><td>413</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>6</td><td>114/10/23</td><td>網頁資料庫程式開發實作</td><td>事假</td><td>414</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>7</td><td>114/10/28</td><td>程式設計與應用(三)</td><td>事假</td><td>211</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>7</td><td>114/10/28</td><td>程式設計與應用(三)</td><td>事假</td><td>212</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>7</td><td>114/10/28</td><td>程式設計與應用(三)</td><td>事假</td><td>213</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>7</td><td>114/10/28</td><td>程式設計與應用(三)</td><td>事假</td><td>214</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>7</td><td>114/10/29</td><td>性別與文化</td><td>事假</td><td>313</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>7</td><td>114/10/29</td><td>性別與文化</td><td>事假</td><td>314</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>8</td><td>114/11/04</td><td>程式設計與應用(三)</td><td>遲到</td><td>211</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>8</td><td>114/11/05</td><td>資料庫系統與實習</td><td>曠課</td><td>311</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>9</td><td>114/11/12</td><td>資料庫系統與實習</td><td>曠課</td><td>311</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>10</td><td>114/11/19</td><td>資料庫系統與實習</td><td>曠課</td><td>311</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>10</td><td>114/11/19</td><td>資料庫系統與實習</td><td>曠課</td><td>312</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>10</td><td>114/11/20</td><td>網頁資料庫程式開發實作</td><td>曠課</td><td>411</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>10</td><td>114/11/20</td><td>網頁資料庫程式開發實作</td><td>曠課</td><td>412</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>10</td><td>114/11/20</td><td>網頁資料庫程式開發實作</td><td>曠課</td><td>413</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>10</td><td>114/11/20</td><td>網頁資料庫程式開發實作</td><td>曠課</td><td>414</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>11</td><td>114/11/25</td><td>程式設計與應用(三)</td><td>曠課</td><td>211</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>11</td><td>114/11/25</td><td>程式設計與應用(三)</td><td>曠課</td><td>212</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>11</td><td>114/11/25</td><td>程式設計與應用(三)</td><td>曠課</td><td>213</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>11</td><td>114/11/25</td><td>程式設計與應用(三)</td><td>曠課</td><td>214</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>11</td><td>114/11/26</td><td>資料庫系統與實習</td><td>曠課</td><td>311</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>11</td><td>114/11/26</td><td>資料庫系統與實習</td><td>曠課</td><td>312</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>11</td><td>114/11/27</td><td>網頁資料庫程式開發實作</td><td>曠課</td><td>411</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>11</td><td>114/11/27</td><td>網頁資料庫程式開發實作</td><td>曠課</td><td>412</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>11</td><td>114/11/27</td><td>網頁資料庫程式開發實作</td><td>曠課</td><td>413</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>11</td><td>114/11/27</td><td>網頁資料庫程式開發實作</td><td>曠課</td><td>414</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>12</td><td>114/12/02</td><td>程式設計與應用(三)</td><td>曠課</td><td>211</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>12</td><td>114/12/02</td><td>程式設計與應用(三)</td><td>曠課</td><td>212</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>12</td><td>114/12/02</td><td>程式設計與應用(三)</td><td>曠課</td><td>213</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>12</td><td>114/12/02</td><td>程式設計與應用(三)</td><td>曠課</td><td>214</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>12</td><td>114/12/03</td><td>資料庫系統與實習</td><td>曠課</td><td>311</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>12</td><td>114/12/03</td><td>資料庫系統與實習</td><td>曠課</td><td>312</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>13</td><td>114/12/09</td><td>程式設計與應用(三)</td><td>曠課</td><td>211</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>13</td><td>114/12/09</td><td>程式設計與應用(三)</td><td>曠課</td><td>212</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>13</td><td>114/12/09</td><td>程式設計與應用(三)</td><td>曠課</td><td>213</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>13</td><td>114/12/09</td><td>程式設計與應用(三)</td><td>曠課</td><td>214</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>13</td><td>114/12/10</td><td>資料庫系統與實習</td><td>曠課</td><td>311</td>
+				</tr><tr style="color:#284775;background-color:White;">
+					<td>14</td><td>114/12/17</td><td>資料庫系統與實習</td><td>曠課</td><td>311</td>
+				</tr><tr style="color:#333333;background-color:#F7F6F3;">
+					<td>14</td><td>114/12/17</td><td>資料庫系統與實習</td><td>曠課</td><td>312</td>
+				</tr>
+			</table>
